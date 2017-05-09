@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>To-do lists</h1>
+    <ul>
+    {% for todolist in todolists %}
+        <li>
+            <div>name: {{ todolist.name }}</div>
+            <div>owner: {{ todolist.owner }}</div>
+        </li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'todolist:create_todolist' %}">Create new!</a>
+</body>
+</html>
