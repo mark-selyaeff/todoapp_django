@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from todolist import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^todolists/', include('todolist.urls')),
+    url(r'^logout/', views.LogoutView.as_view(), name='logout'),
+    url(r'^login/$', views.LoginView.as_view(), name='login')
 ]
