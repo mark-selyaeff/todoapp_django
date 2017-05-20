@@ -4,11 +4,12 @@ from django.views import generic, View
 import requests
 from django.http import HttpResponseRedirect
 from .forms import TodolistCreateForm, LoginForm
+from todolist.services import create_auth_header
 # Create your views here.
 
 def index(request):
     token = request.session.get('token', False)
-    headers = {'Authorization': 'Token {}'.format(token if token else '')}
+    headers = create_auth_header(request.session)
     r = requests.get('http://127.0.0.1:8080/todolists/', headers=headers)
     todolists = r.json()
     # request.session.flush()
@@ -23,7 +24,8 @@ class CreateTodolist(View):
         form = TodolistCreateForm(request.POST)
         if form.is_valid():
             post_data = {'name': form.cleaned_data['name']}
-            response = requests.post('http://127.0.0.1:8080/todolists/', data=post_data)
+            headers = create_auth_header(request.session)
+            response = requests.post('http://127.0.0.1:8080/todolists/', data=post_data, headers=headers)
             return HttpResponseRedirect('/todolists/')
 
 class LoginView(View):
