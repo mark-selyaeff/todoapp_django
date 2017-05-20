@@ -28,6 +28,14 @@ class CreateTodolist(View):
             response = requests.post('http://127.0.0.1:8080/todolists/', data=post_data, headers=headers)
             return HttpResponseRedirect('/todolists/')
 
+class ListDetail(View):
+    def get(self, request, list_id, *args, **kwargs):
+        # return HttpResponse('{} hah'.format(list_id))
+        headers = create_auth_header(request.session)
+        r = requests.get('http://127.0.0.1:8080/todolists/{}'.format(list_id), headers=headers)
+        list_details = r.json()
+        return render(request, 'list_detail.html', {'list_details': list_details})
+
 class LoginView(View):
     def get(self, request, *args, **kwargs):
         form = LoginForm()
