@@ -10,7 +10,9 @@
     <ul>
         {% for todolist in todolists %}
             <li>
-                <a href="/todolists/{{ todolist.id }}/">name: {{ todolist.name }}</a>
+                name: <a href="/todolists/{{ todolist.id }}/">{{ todolist.name }}</a>
+                <a href="/todolists/{{ todolist.id }}/delete/">Удалить</a>
+                <a href="/todolists/{{ todolist.id }}/update/">Изменить</a>
 {#       not necessary         <div>owner: {{ todolist.owner }}</div>#}
             </li>
         {% endfor %}

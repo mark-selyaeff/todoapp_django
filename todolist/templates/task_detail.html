@@ -1,0 +1,5 @@
+<h1>Details of {{ task_details.name }}</h1>
+{% for key, value in task_details.items %}
+<p>{{ key }} – {{ value }}</p>
+{% endfor %}
+<a href="/todolists/{{ task_details.tasklist }}/tasks/{{ task_details.id }}/delete/">Удалить этот task</a>
