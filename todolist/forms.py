@@ -23,8 +23,7 @@ class RegisterForm(forms.ModelForm):
 class TaskCreateForm(forms.Form):
     name = forms.CharField(label = 'Task name', max_length=50)
     description = forms.CharField(widget=forms.Textarea, max_length=1000, label='Description')
-    completed = forms.BooleanField()
+    completed = forms.BooleanField(required=False)
     date_created = forms.DateField(initial=datetime.date.today)
     due_date = forms.DateField()
-    date_created = forms.DateField(initial=datetime.date.today)
-    tags = forms.CharField(label = "Tags", max_length=100)
+    tags = forms.CharField(label = "Tags", max_length=100, required=False)

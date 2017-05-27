@@ -4,7 +4,7 @@ from django.views import generic, View
 import requests
 from django.http import HttpResponseRedirect
 from .forms import TodolistCreateForm, LoginForm, TodolistUpdateForm, TaskCreateForm
-from todolist.services import create_auth_header
+from todolist.services import create_auth_header, convert_from_json_to_obj
 from todolist.services import generate_confirmation_token
 # Create your views here.
 
@@ -57,13 +57,51 @@ class TaskCreate(View):
     def get(self, request, list_id, *args, **kwargs):
         form = TaskCreateForm()
         return render(request, 'create_task.html', {'form': form, 'list_id': list_id})
+    def post(self, request, list_id, *args, **kwargs):
+        form = TaskCreateForm(request.POST)
+        if form.is_valid():
+            post_data = {}
+            for key in form.cleaned_data:
+                post_data[key] = form.cleaned_data[key]
+            post_data['tags'] = convert_from_json_to_obj(post_data['tags']) if post_data['tags'] else []
+            print(post_data)
+            headers = create_auth_header(request.session)
+            r = requests.post('http://127.0.0.1:8080/todolists/{}/tasks/'.format(list_id), headers=headers, data=post_data)
+            if r.status_code == 400:
+                print(r.json())
+            return redirect('todolist:list-detail', list_id=list_id)
+    # дописать post()
+    #     {"tags": [], "name": "", "description": "", "completed": false, "due_date": null, "priority": null}
+
+class TaskUpdate(View):
+    def get(self, request, list_id, pk, *args, **kwargs):
+        headers = create_auth_header(request.session)
+        r = requests.get('http://127.0.0.1:8080/todolists/{}/tasks/{}/'.format(list_id, pk), headers=headers)
+        form = TaskCreateForm(r.json())
+        return render(request, 'update_task.html', {'form': form, 'list_id': list_id, 'pk': pk})
+    def post(self, request, list_id, pk, *args, **kwargs):
+        form = TaskCreateForm(request.POST)
+        if form.is_valid():
+            post_data = {}
+            for key in form.cleaned_data:
+                post_data[key] = form.cleaned_data[key]
+            print(post_data['tags'])
+            post_data['tags'] = convert_from_json_to_obj(post_data['tags'][1:-1]) if post_data['tags'] else [] # НЕ ВСЕГДА КОРРЕКТНО РАБОТАЕТ
+            print(post_data['tags']) # убрать квадратые скобки из JSON репрезентации
+            print(post_data)
+            headers = create_auth_header(request.session)
+            r = requests.put('http://127.0.0.1:8080/todolists/{}/tasks/{}/'.format(list_id, pk), headers=headers, data=post_data)
+            if r.status_code == 400:
+                print(r.json())
+            return redirect('todolist:list-detail', list_id=list_id)
+
 
 class TaskDetail(View):
     def get(self, request, list_id, pk, *args, **kwargs):
         headers = create_auth_header(request.session)
         r = requests.get('http://127.0.0.1:8080/todolists/{}/tasks/{}/'.format(list_id, pk), headers=headers)
         task_details = r.json()
-        return render(request, 'task_detail.html', {'task_details': task_details})
+        return render(request, 'task_detail.html', {'task_details': task_details, 'list_id': list_id})
 
 class TaskDetailDelete(View):
     def get(self, request, list_id, pk, *args, **kwargs):
