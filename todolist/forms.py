@@ -26,4 +26,11 @@ class TaskCreateForm(forms.Form):
     completed = forms.BooleanField(required=False)
     date_created = forms.DateField(initial=datetime.date.today)
     due_date = forms.DateField()
+    PRIORITY = (
+        ('h', 'High'),
+        ('m', 'Medium'),
+        ('l', 'Low'),
+        ('n', 'None')
+    )
+    priority = forms.ChoiceField(choices=PRIORITY, label="Priority", initial='m', widget=forms.Select(), required=True)
     tags = forms.CharField(label = "Tags", max_length=100, required=False)

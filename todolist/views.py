@@ -132,3 +132,9 @@ class LogoutView(View):
     def get(self, request, *args, **kwargs):
         request.session.flush()
         return HttpResponseRedirect('/todolists/')
+
+def shared_tasks(request):
+    headers = create_auth_header(request.session)
+    r = requests.get('http://127.0.0.1:8080/shared/', headers=headers)
+    shared_tasks = r.json()
+    return render(request, 'shared_tasks.html', {'tasks': shared_tasks})

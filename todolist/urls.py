@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^(?P<list_id>[0-9]+)/tasks/(?P<pk>[0-9]+)/$', views.TaskDetail.as_view(), name='task-detail'),
     url(r'^(?P<list_id>[0-9]+)/tasks/(?P<pk>[0-9]+)/update/$', views.TaskUpdate.as_view(), name='task-detail-update'),
     url(r'^(?P<list_id>[0-9]+)/tasks/(?P<pk>[0-9]+)/delete/$', views.TaskDetailDelete.as_view(), name='task-detail-delete'),
+    url(r'^shared/$', views.shared_tasks, name='shared-tasks'),
 ]
 
